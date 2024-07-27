@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "João",
+    "idManager": 1,
+    "idAccount": 1,
+    "address": "Rua XX",
+    "phone": "883456789"
+  },
+  {
+    "id": 2,
+    "name": "Joana",
+    "idManager": 1,
+    "idAccount": 2,
+    "address": "Rua ZX",
+    "phone": "883456789"
+  }
+]
