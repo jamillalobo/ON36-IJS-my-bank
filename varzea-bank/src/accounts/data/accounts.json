@@ -4,8 +4,7 @@
     "id_client": 1,
     "id_manager": 1,
     "balance": 1000,
-    "type": "savings",
-    "idManager": 3
+    "type": "savings"
   },
   {
     "id": 2,

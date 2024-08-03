@@ -6,9 +6,11 @@ import {
   Post,
   Delete,
   ParseIntPipe,
+  Get,
 } from '@nestjs/common';
 import { AccountsService } from 'src/accounts/accounts.service';
-import { Account, AccountType } from './account.model';
+import { Account } from './models/account.interface';
+import { AccountType } from './enums/accountType.enum';
 
 @Controller('accounts')
 export class AccountsController {
@@ -20,16 +22,30 @@ export class AccountsController {
     @Body('id_manager') idManager: number,
     @Body('balance') balance: number,
     @Body('type') type: AccountType,
+    @Body('rate') rate?: number,
+    @Body('overDraftLimit') overDraftLimit?: number
   ): Account {
     return this.accountsService.createAccount(
       idClient,
       idManager,
       balance,
       type,
+      rate,
+      overDraftLimit
     );
   }
 
-  @Patch(':id/updateAccount')
+  @Get()
+  findAllAccounts(): Account[] {
+    return this.accountsService.getAccounts();
+  }
+
+  @Get(':id')
+  findClientById(@Param('id', ParseIntPipe) id: number): Account {
+    return this.accountsService.getAccountById(id);
+  }
+
+  @Patch(':id/update-type-account')
   updateAccountType(
     @Param('id', ParseIntPipe) id: number,
     @Body('newType') newType: AccountType,
