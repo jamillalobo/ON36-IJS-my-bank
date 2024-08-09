@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { AccountType } from "../enums/accountType.enum";
-import { Account } from "../models/account.interface";
+import { Account } from "../models/account.interface.model";
 import { CurrentAccount } from "../models/current-account";
 import { SavingsAccount } from "../models/savings-account";
 
 
 @Injectable()
 export class AccountFactory {
-    createAccount(
+    static createAccount(
         type: AccountType, 
         id: number,
         idClient: number,
@@ -18,7 +18,7 @@ export class AccountFactory {
     ): Account {
         switch (type) {
             case AccountType.CURRENT:
-                return new CurrentAccount(id, idClient, idManager,balance, rate);
+                return new CurrentAccount(id = 123, idClient = 1, idManager = 2,balance = 1000, rate = 0.2);
             case AccountType.SAVINGS:
                 return new SavingsAccount(id, idClient, idManager,balance, overDraftLimit);
             default:
