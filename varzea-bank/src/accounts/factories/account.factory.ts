@@ -9,20 +9,21 @@ import { SavingsAccount } from "../models/savings-account";
 export class AccountFactory {
     static createAccount(
         type: AccountType, 
-        id: number,
+        idAccount: number,
         idClient: number,
         idManager: number,
         balance: number,
         rate?: number,
         overDraftLimit?: number
-    ): Account {
+    ): CurrentAccount | SavingsAccount {
         switch (type) {
             case AccountType.CURRENT:
-                return new CurrentAccount(id = 123, idClient = 1, idManager = 2,balance = 1000, rate = 0.2);
+                return new CurrentAccount(idAccount, idClient, idManager, balance, rate);
             case AccountType.SAVINGS:
-                return new SavingsAccount(id, idClient, idManager,balance, overDraftLimit);
+                return new SavingsAccount(idAccount, idClient, idManager, balance, overDraftLimit);
             default:
                 throw new Error('Invalid account type');
         }
     }
+    
 }
