@@ -11,4 +11,24 @@ export class CurrentAccount implements Account {
     public balance: number,
     public rate: number,
   ) {}
+
+  getBalance(): number {
+    return this.balance
+  }
+  
+  deposit(value: number): void {
+    this.balance += value;
+  }
+
+  withdraw(value: number): void {
+    if (value <= this.balance){
+      this.balance -= value
+      return;
+    };
+    throw new Error('Saldo insuficiente');
+  }
+
+  transfer(destiny: Account, value: number): void {
+    
+  }
 }
