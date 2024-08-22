@@ -2,19 +2,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import * as path from 'path';
 import * as fs from 'fs';
 import { Client } from 'src/clients/model/client.model';
+import { ClientRepository } from './repository/client.repository';
 
 @Injectable()
 export class ClientsService {
-  private readonly filePath = path.resolve('src/clients/data/clients.json');
-
-  private readClients(): Client[] {
-    const data = fs.readFileSync(this.filePath, 'utf8');
-    return JSON.parse(data) as Client[];
-  }
-
-  private writeClients(clients: Client[]): void {
-    fs.writeFileSync(this.filePath, JSON.stringify(clients, null, 2), 'utf8');
-  }
+  constructor(
+    private readonly clientRepository: ClientRepository,
+  ) {}
 
   createClient(
     name: string,
@@ -22,7 +16,7 @@ export class ClientsService {
     address: string,
     phone: string,
   ): Client {
-    const clients = this.readClients();
+    const clients = this.clientRepository.readClients();
     const newClient: Client = {
       id: clients.length > 0 ? Number(clients[clients.length - 1].id) + 1 : 1,
       name,
@@ -32,16 +26,16 @@ export class ClientsService {
     };
 
     clients.push(newClient);
-    this.writeClients(clients);
+    this.clientRepository.writeClients(clients);
     return newClient;
   }
 
   findAllClients(): Client[] {
-   return this.readClients();
+   return this.clientRepository.readClients();
   }
 
   findClientById(id: number): Client {
-    const clients = this.readClients();
+    const clients = this.clientRepository.readClients();
     const client = clients.find((client) => client.id === Number(id));
     return client;
   }
@@ -53,7 +47,7 @@ export class ClientsService {
     address: string,
     phone: string,
   ): Client {
-    const clients = this.readClients();
+    const clients = this.clientRepository.readClients();
     const client = clients.find((client) => client.id === Number(id))
 
     if(!client) {
@@ -69,12 +63,12 @@ export class ClientsService {
     };
     
     clients.push(updatedClient)
-    this.writeClients(clients)
+    this.clientRepository.writeClients(clients)
     return updatedClient;
   }
 
   deleteClient(id: number): void {
-    const clients = this.readClients();
+    const clients = this.clientRepository.readClients();
     const clientIndex = clients.findIndex((client) => client.id === Number(id));
 
     clients.splice(clientIndex, 1);
