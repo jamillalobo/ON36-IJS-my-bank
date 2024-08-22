@@ -1,12 +1,14 @@
+import { Client } from "src/clients/model/client.model";
 import { AccountType } from "../enums/accountType.enum";
 import { Account } from "./account.interface.model";
+import { Manager } from "src/managers/model/manager.model";
 
 export class SavingsAccount implements Account {
     type = AccountType.SAVINGS
     constructor(
         public idAccount: number,
-        public idClient: number,
-        public idManager: number,
+        public idClient: Client["id"],
+        public idManager: Manager["id"],
         public balance: number,
         public overDraftLimit: number
     ){}

@@ -3,15 +3,18 @@ import { AccountType } from "../enums/accountType.enum";
 import { Account } from "../models/account.interface.model";
 import { CurrentAccount } from "../models/current-account";
 import { SavingsAccount } from "../models/savings-account";
+import { Client } from "src/clients/model/client.model";
+import { Manager } from "src/managers/model/manager.model";
 
 
 @Injectable()
 export class AccountFactory {
-    static createAccount(
+    static createAccount: any;
+    createAccount(
         type: AccountType, 
         idAccount: number,
-        idClient: number,
-        idManager: number,
+        idClient: Client["id"],
+        idManager: Manager["id"],
         balance: number,
         rate?: number,
         overDraftLimit?: number

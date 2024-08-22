@@ -13,10 +13,10 @@ export class AccountsService {
   idCounter: number;
 
   constructor(
-    // private readonly AccountFactory: AccountFactory,
-    private readonly AccountRepository: AccountRepository,
+    private readonly accountFactory: AccountFactory,
+    private readonly accountRepository: AccountRepository,
   ) {
-    const accounts = this.AccountRepository.readAccounts();
+    const accounts = this.accountRepository.readAccounts();
     this.idCounter = accounts.length > 0 ? accounts[accounts.length - 1].idAccount + 1 : 1;
   }
 
@@ -28,11 +28,11 @@ export class AccountsService {
     rate?: number,
     overDraftLimit?: number
   ): SavingsAccount | CurrentAccount {
-    const accounts = this.AccountRepository.readAccounts();
+    const accounts = this.accountRepository.readAccounts();
     let newAccount: SavingsAccount | CurrentAccount;
 
     if (type === AccountType.CURRENT) {
-      newAccount = AccountFactory.createAccount(
+      newAccount = this.accountFactory.createAccount(
         type,
         this.idCounter,
         idClient,
@@ -41,7 +41,7 @@ export class AccountsService {
         rate,
       ) as CurrentAccount;
     } else if (type === AccountType.SAVINGS) {
-      newAccount = AccountFactory.createAccount(
+      newAccount = this.accountFactory.createAccount(
         type,
         this.idCounter,
         idClient,
@@ -53,18 +53,18 @@ export class AccountsService {
   
     if (newAccount) {
       accounts.push(newAccount);
-      this.AccountRepository.writeAccounts(accounts);
+      this.accountRepository.writeAccounts(accounts);
     }
   
     return newAccount;
   }
 
   getAccounts(): Account[] {
-    return this.AccountRepository.readAccounts();
+    return this.accountRepository.readAccounts();
   }
 
   getAccountById(id: number): Account {
-    const accounts = this.AccountRepository.readAccounts();
+    const accounts = this.accountRepository.readAccounts();
     const account = accounts.find((account) => account.idAccount === id)
 
     if (!account) {
@@ -74,21 +74,21 @@ export class AccountsService {
   }
 
   updateAccountType(id: number, newType: AccountType): void {
-    const accounts = this.AccountRepository.readAccounts();
+    const accounts = this.accountRepository.readAccounts();
     const accountIndex = accounts.findIndex(
       (account) => account.idAccount === Number(id),
     );
 
     if (accountIndex !== -1) {
       accounts[accountIndex].type = newType;
-      this.AccountRepository.writeAccounts(accounts);
+      this.accountRepository.writeAccounts(accounts);
     } else {
       console.error(`Account with ID ${id} not found.`);
     }
   }
 
   deleteAccount(id: number): void {
-    const accounts = this.AccountRepository.readAccounts();
+    const accounts = this.accountRepository.readAccounts();
     const accountIndex = accounts.findIndex(
       (account) => account.idAccount === Number(id),
     );
@@ -99,6 +99,6 @@ export class AccountsService {
 
     accounts.splice(accountIndex, 1);
 
-    this.AccountRepository.writeAccounts(accounts);
+    this.accountRepository.writeAccounts(accounts);
   }
 }
