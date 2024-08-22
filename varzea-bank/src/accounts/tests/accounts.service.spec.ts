@@ -1,13 +1,12 @@
 import { Account } from './../models/account.interface.model';
 import { AccountRepository } from './../repository/account.repository';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AccountsService } from '../accounts.service';
+import { AccountsService } from '../application/accounts.service';
 import { AccountFactory } from '../factories/account.factory';
 import { CurrentAccount } from '../models/current-account';
 import { AccountType } from '../enums/accountType.enum';
 import { SavingsAccount } from '../models/savings-account';
 
-const mockedDate = new Date(2000, 9, 1, 7);
 const mockedAccount = new SavingsAccount(12, 2, 3, 1000, 0.2);
 
 describe('AccountsService', () => {
@@ -16,7 +15,7 @@ describe('AccountsService', () => {
   const accountRepository = new AccountRepository();
   const accountService = new AccountsService(accountRepository);
 
-  const esperado = new CurrentAccount(123, 1, 2, 1000, 0.2);
+  const esperado = new CurrentAccount(3, 1, 2, 1000, 0.2);
 
   const resultado = accountService.createAccount(1000, 1, 2, AccountType.CURRENT, 0.2)
 

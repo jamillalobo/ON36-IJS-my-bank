@@ -13,7 +13,6 @@ export class AccountsService {
   idCounter: number;
 
   constructor(
-    private readonly accountFactory: AccountFactory,
     private readonly accountRepository: AccountRepository,
   ) {
     const accounts = this.accountRepository.readAccounts();
@@ -32,7 +31,7 @@ export class AccountsService {
     let newAccount: SavingsAccount | CurrentAccount;
 
     if (type === AccountType.CURRENT) {
-      newAccount = this.accountFactory.createAccount(
+      newAccount = AccountFactory.createAccount(
         type,
         this.idCounter,
         idClient,
@@ -40,8 +39,10 @@ export class AccountsService {
         balance,
         rate,
       ) as CurrentAccount;
-    } else if (type === AccountType.SAVINGS) {
-      newAccount = this.accountFactory.createAccount(
+    } 
+    
+    if (type === AccountType.SAVINGS) {
+      newAccount = AccountFactory.createAccount(
         type,
         this.idCounter,
         idClient,

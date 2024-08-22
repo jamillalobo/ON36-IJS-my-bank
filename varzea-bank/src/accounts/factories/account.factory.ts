@@ -9,21 +9,19 @@ import { Manager } from "src/managers/model/manager.model";
 
 @Injectable()
 export class AccountFactory {
-    static createAccount: any;
-    createAccount(
+    static createAccount(
         type: AccountType, 
-        idAccount: number,
-        idClient: Client["id"],
-        idManager: Manager["id"],
-        balance: number,
-        rate?: number,
-        overDraftLimit?: number
+        idAccount: number, 
+        idClient: number, 
+        idManager: number,
+        balance: number, 
+        specificParam: number, 
     ): CurrentAccount | SavingsAccount {
         switch (type) {
-            case AccountType.CURRENT:
-                return new CurrentAccount(idAccount, idClient, idManager, balance, rate);
             case AccountType.SAVINGS:
-                return new SavingsAccount(idAccount, idClient, idManager, balance, overDraftLimit);
+                return new SavingsAccount(idAccount, idClient, idManager, balance, specificParam);
+            case AccountType.CURRENT:
+                return new CurrentAccount(idAccount, idClient, idManager, balance, specificParam);
             default:
                 throw new Error('Invalid account type');
         }

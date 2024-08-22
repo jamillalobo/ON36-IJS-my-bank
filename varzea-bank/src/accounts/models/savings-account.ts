@@ -5,15 +5,17 @@ import { Manager } from "src/managers/model/manager.model";
 
 export class SavingsAccount implements Account {
     type = AccountType.SAVINGS
+
     constructor(
         public idAccount: number,
         public idClient: Client["id"],
         public idManager: Manager["id"],
         public balance: number,
-        public overDraftLimit: number
+        public overDraftLimit: number,
     ){}
+
     getBalance(): number {
-        return this.balance + this.overDraftLimit
+        return this.balance + this.overDraftLimit;
       }
       
       deposit(value: number): void {
