@@ -1,14 +1,15 @@
 import { Controller, Post, Body, Delete, Param, Get, ParseIntPipe, Put } from '@nestjs/common';
-import { ManagersService } from './managers.service';
-import { Manager } from './model/manager.model';
+import { ManagersService } from '../../application/outboundPorts/managers.service';
+import { Manager } from '../../application/domain/manager.model';
+import { CreateManagerDto } from './dto/create-manager.dto';
 
 @Controller('managers')
 export class ManagersController {
   constructor(private readonly managersService: ManagersService) {}
 
   @Post()
-  createManager(@Body('name') name: string): Manager {
-    return this.managersService.createManager(name);
+  createManager(@Body() createManagerDto: CreateManagerDto): Manager {
+    return this.managersService.createManager(createManagerDto);
   }
 
   @Get()

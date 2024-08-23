@@ -1,7 +1,7 @@
 import { Client } from 'src/clients/application/domain/model/client.model';
 import { AccountType } from '../enums/accountType.enum';
 import { Account } from './account.interface.model';
-import { Manager } from 'src/managers/application/domain/model/manager.model';
+import { Manager } from '../../../../managers/application/domain/manager.model';
 
 export class CurrentAccount implements Account {
   type = AccountType.CURRENT;

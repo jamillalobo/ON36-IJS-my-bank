@@ -1,7 +1,8 @@
-import { ManagerRepository } from './application/inboundPorts/manager.repository';
+import { ManagerRepository } from '../../application/inboundPorts/manager.repository';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Manager } from './model/manager.model';
-import { AccountRepository } from '../accounts/application/inboundPorts/account.repository';
+import { Manager } from '../domain/manager.model';
+import { AccountRepository } from '../../../accounts/application/inboundPorts/account.repository';
+import { CreateManagerDto } from 'src/managers/adapters/http/dto/create-manager.dto';
 
 @Injectable()
 export class ManagersService {
@@ -10,7 +11,7 @@ export class ManagersService {
     private readonly managerRepository: ManagerRepository,
   ) {}
 
-  createManager(name: string): Manager {
+  createManager(createManagerDto: CreateManagerDto): Manager {
     const managers = this.managerRepository.readManagers();
     const accounts = this.accountRepository.readAccounts();
 
@@ -27,8 +28,8 @@ export class ManagersService {
 
     const newManager: Manager = {
       id: newManagerId,
-      name: name,
-      idAccounts: accountIds,
+      name: createManagerDto.name,
+      accounts: accountIds,
     };
 
     managers.push(newManager);
