@@ -3,7 +3,7 @@ import { AccountType } from "../enums/accountType.enum";
 import { Account } from "../models/account.interface.model";
 import { CurrentAccount } from "../models/current-account";
 import { SavingsAccount } from "../models/savings-account";
-import { Client } from "src/clients/application/domain/model/client.model";
+import { Client } from "src/clients/application/domain/client.model";
 import { Manager } from "src/managers/application/domain/model/manager.model";
 
 

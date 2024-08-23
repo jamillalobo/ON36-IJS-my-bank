@@ -1,8 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import * as path from 'path';
 import * as fs from 'fs';
-import { Client } from 'src/clients/application/domain/model/client.model';
-import { ClientRepository } from './repository/client.repository';
+import { Client } from 'src/clients/application/domain/client.model';
+import { ClientRepository } from '../inboundPorts/client.repository';
+import { CreateClientDto } from '../../adapters/http/dto/create-client.dto';
+import { error } from 'console';
 
 @Injectable()
 export class ClientsService {
@@ -10,19 +12,24 @@ export class ClientsService {
     private readonly clientRepository: ClientRepository,
   ) {}
 
-  createClient(
-    name: string,
-    idAccount: number,
-    address: string,
-    phone: string,
-  ): Client {
+  async createClient(createClientDto: CreateClientDto): Promise<Client> {
     const clients = this.clientRepository.readClients();
+
+    const newClientId =
+    clients.length > 0 ? Number(clients[clients.length - 1].id) + 1 : 1;
+
+    const logradouro = await this.clientRepository.getCep(createClientDto.cep);
+
+    if (!logradouro) {
+      throw new Error('Could not create a client with no valid logradouro');
+    }
+
     const newClient: Client = {
-      id: clients.length > 0 ? Number(clients[clients.length - 1].id) + 1 : 1,
-      name,
-      idAccount,
-      address,
-      phone,
+      id: newClientId,
+      name: createClientDto.name,
+      account: [], // vou ajeitar isso em breve
+      cep: logradouro,
+      phone: createClientDto.phone
     };
 
     clients.push(newClient);

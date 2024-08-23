@@ -1,18 +1,35 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClientsService } from './clients.service';
+import { ClientRepository } from '../inboundPorts/client.repository';
 
 describe('ClientsService', () => {
-  let service: ClientsService;
+  test('should create a Client', async () => {
+    const clientRepository = new ClientRepository();
+    const clientService = new ClientsService(clientRepository);
+    
+    jest.spyOn(clientRepository, 'getCep').mockResolvedValue('Rua Francisco Lacerda');
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [ClientsService],
-    }).compile();
+    const esperado = {
+      id: 8,
+      name: 'Alex',
+      account: [],
+      cep: 'Rua Francisco Lacerda',
+      phone: '999999999',
+    };
+    
+    const resultado = await clientService.createClient({ name: 'Alex', cep: '50741150', phone: '999999999' });
 
-    service = module.get<ClientsService>(ClientsService);
-  });
+    expect(resultado).toStrictEqual(esperado);
+  }
+  );
+  test('should find all Clients', () => {
+    const clientRepository = new ClientRepository();
+    const clientService = new ClientsService(clientRepository);
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+    const esperado = clientRepository.readClients();
+
+    const resultado = clientService.findAllClients();
+
+    expect(resultado).toStrictEqual(esperado);
   });
 });
