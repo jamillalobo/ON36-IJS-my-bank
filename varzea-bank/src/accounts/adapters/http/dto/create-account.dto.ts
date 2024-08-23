@@ -2,7 +2,7 @@ import {
     IsNotEmpty,
   } from 'class-validator';
 import { AccountType } from 'src/accounts/application/domain/enums/accountType.enum';
-import { Manager } from 'src/managers/model/manager.model';
+import { Manager } from 'src/managers/application/domain/model/manager.model';
 
 export class CreateAccountDto {
     @IsNotEmpty()

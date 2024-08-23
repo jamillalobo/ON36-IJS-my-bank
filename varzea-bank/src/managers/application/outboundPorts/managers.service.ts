@@ -1,4 +1,4 @@
-import { ManagerRepository } from './repository/manager.repository';
+import { ManagerRepository } from './application/inboundPorts/manager.repository';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Manager } from './model/manager.model';
 import { AccountRepository } from '../accounts/application/inboundPorts/account.repository';

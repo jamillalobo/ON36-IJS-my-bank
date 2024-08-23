@@ -1,6 +1,6 @@
-import { Client } from 'src/clients/domain/model/client.model';
+import { Client } from 'src/clients/application/domain/model/client.model';
 import { AccountType } from '../enums/accountType.enum';
-import { Manager } from 'src/managers/model/manager.model';
+import { Manager } from 'src/managers/application/domain/model/manager.model';
 
 export interface Account {
   idAccount: number;
