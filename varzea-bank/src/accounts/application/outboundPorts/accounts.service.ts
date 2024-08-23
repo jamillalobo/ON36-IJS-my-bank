@@ -1,12 +1,10 @@
-import { CurrentAccount } from './models/current-account';
-import { AccountRepository } from './repository/account.repository';
-import { AccountFactory } from './factories/account.factory';
+import { CurrentAccount } from '../domain/models/current-account';
+import { AccountRepository } from '../inboundPorts/account.repository';
+import { AccountFactory } from '../domain/factories/account.factory';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Account } from './models/account.interface.model';
-import * as path from 'path';
-import * as fs from 'fs';
-import { AccountType } from './enums/accountType.enum';
-import { SavingsAccount } from './models/savings-account';
+import { Account } from '../domain/models/account.interface.model';
+import { AccountType } from '../domain/enums/accountType.enum';
+import { SavingsAccount } from '../domain/models/savings-account';
 
 @Injectable()
 export class AccountsService {

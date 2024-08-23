@@ -1,7 +1,7 @@
 import { ManagerRepository } from './repository/manager.repository';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Manager } from './model/manager.model';
-import { AccountRepository } from 'src/accounts/repository/account.repository';
+import { AccountRepository } from '../accounts/application/inboundPorts/account.repository';
 
 @Injectable()
 export class ManagersService {

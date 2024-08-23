@@ -1,4 +1,4 @@
-import { Client } from 'src/clients/model/client.model';
+import { Client } from 'src/clients/domain/model/client.model';
 import { AccountType } from '../enums/accountType.enum';
 import { Manager } from 'src/managers/model/manager.model';
 

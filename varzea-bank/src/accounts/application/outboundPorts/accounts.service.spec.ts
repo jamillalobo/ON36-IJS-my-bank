@@ -1,11 +1,11 @@
-import { Account } from './../models/account.interface.model';
-import { AccountRepository } from './../repository/account.repository';
+import { Account } from '../domain/models/account.interface.model';
+import { AccountRepository } from '../inboundPorts/account.repository';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AccountsService } from '../application/accounts.service';
-import { AccountFactory } from '../factories/account.factory';
-import { CurrentAccount } from '../models/current-account';
-import { AccountType } from '../enums/accountType.enum';
-import { SavingsAccount } from '../models/savings-account';
+import { AccountsService } from './accounts.service';
+import { AccountFactory } from '../domain/factories/account.factory';
+import { CurrentAccount } from '../domain/models/current-account';
+import { AccountType } from '../domain/enums/accountType.enum';
+import { SavingsAccount } from '../domain/models/savings-account';
 
 const mockedAccount = new SavingsAccount(12, 2, 3, 1000, 0.2);
 

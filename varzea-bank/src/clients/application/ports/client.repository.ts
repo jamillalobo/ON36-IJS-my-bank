@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import * as path from "path";
 import * as fs from "fs";
-import { Client } from "../model/client.model";
+import { Client } from "../domain/model/client.model";
 
 @Injectable()
 export class ClientRepository {

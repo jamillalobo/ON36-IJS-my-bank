@@ -9,7 +9,7 @@ import {
   Get,
 } from '@nestjs/common';
 import { ClientsService } from './clients.service';
-import { Client } from './model/client.model';
+import { Client } from './domain/model/client.model';
 
 @Controller('clients')
 export class ClientsController {

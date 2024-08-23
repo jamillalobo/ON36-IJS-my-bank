@@ -9,10 +9,10 @@ import {
   Get,
 } from '@nestjs/common';
 import { AccountsService } from 'src/accounts/accounts.service';
-import { Account } from './models/account.interface.model';
-import { AccountType } from './enums/accountType.enum';
-import { SavingsAccount } from './models/savings-account';
-import { CurrentAccount } from './models/current-account';
+import { Account } from '../../application/domain/models/account.interface.model';
+import { AccountType } from '../../application/domain/enums/accountType.enum';
+import { SavingsAccount } from '../../application/domain/models/savings-account';
+import { CurrentAccount } from '../../application/domain/models/current-account';
 
 @Controller('accounts')
 export class AccountsController {

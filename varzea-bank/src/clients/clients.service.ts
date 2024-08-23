@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import * as path from 'path';
 import * as fs from 'fs';
-import { Client } from 'src/clients/model/client.model';
+import { Client } from 'src/clients/domain/model/client.model';
 import { ClientRepository } from './repository/client.repository';
 
 @Injectable()

@@ -1,7 +1,7 @@
-import { AccountType } from "../enums/accountType.enum";
-import { AccountFactory } from "../factories/account.factory";
-import { CurrentAccount } from "../models/current-account";
-import { SavingsAccount } from "../models/savings-account";
+import { AccountType } from "../domain/enums/accountType.enum";
+import { AccountFactory } from "../domain/factories/account.factory";
+import { CurrentAccount } from "../domain/models/current-account";
+import { SavingsAccount } from "../domain/models/savings-account";
 
 describe('Account Factory', () => {
     test('should create a current account', () => {
