@@ -1,11 +1,21 @@
-import { Injectable } from '@nestjs/common';
-import { Account, AccountType } from './account.model';
+import { AccountFactory } from './factories/account.factory';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Account } from './models/account.interface';
 import * as path from 'path';
 import * as fs from 'fs';
+import { AccountType } from './enums/accountType.enum';
 
 @Injectable()
 export class AccountsService {
-  private readonly filePath = path.resolve('src/accounts/accounts.json');
+  private readonly filePath = path.resolve('src/accounts/data/accounts.json');
+  idCounter: number;
+
+  constructor(
+    private readonly AccountFactory: AccountFactory,
+  ) {
+    const accounts = this.readAccounts();
+    this.idCounter = accounts.length > 0 ? accounts[accounts.length - 1].id + 1 : 1;
+  }
 
   public readAccounts(): Account[] {
     const data = fs.readFileSync(this.filePath, 'utf8');
@@ -21,20 +31,52 @@ export class AccountsService {
     idClient: number,
     idManager: number,
     type: AccountType,
+    rate?: number,
+    overDraftLimit?: number
   ): Account {
     const accounts = this.readAccounts();
-    const newAccount: Account = {
-      id:
-        accounts.length > 0 ? Number(accounts[accounts.length - 1].id) + 1 : 1,
-      idClient,
-      idManager,
-      balance,
-      type,
-    };
+    let newAccount: Account;
 
-    accounts.push(newAccount);
-    this.writeAccounts(accounts);
+    if (type === AccountType.CURRENT) {
+      newAccount = this.AccountFactory.createAccount(
+        type,
+        this.idCounter,
+        idClient,
+        idManager,
+        balance,
+        rate
+      );
+    } else if (type === AccountType.SAVINGS) {
+      newAccount = this.AccountFactory.createAccount(
+        type,
+        this.idCounter,
+        idClient,
+        idManager,
+        balance,
+        overDraftLimit
+      );
+    }
+  
+    if (newAccount) {
+      accounts.push(newAccount);
+      this.writeAccounts(accounts);
+    }
+  
     return newAccount;
+  }
+
+  getAccounts(): Account[] {
+    return this.readAccounts();
+  }
+
+  getAccountById(id: number): Account {
+    const accounts = this.readAccounts();
+    const account = accounts.find((account) => account.id === id)
+
+    if (!account) {
+      throw new NotFoundException(`Account with id ${id} not found`);
+    }
+    return account    
   }
 
   updateAccountType(id: number, newType: AccountType): void {
