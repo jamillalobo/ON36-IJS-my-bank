@@ -32,7 +32,7 @@ export class ManagersService {
 
     this.accountsService.writeAccounts(accounts);
 
-    const accountIds = accounts.map((account) => account.id);
+    const accountIds = accounts.map((account) => account.idAccount);
 
     const newManager: Manager = {
       id: newManagerId,

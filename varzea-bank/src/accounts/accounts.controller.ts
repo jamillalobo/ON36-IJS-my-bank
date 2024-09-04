@@ -9,8 +9,10 @@ import {
   Get,
 } from '@nestjs/common';
 import { AccountsService } from 'src/accounts/accounts.service';
-import { Account } from './models/account.interface';
+import { Account } from './models/account.interface.model';
 import { AccountType } from './enums/accountType.enum';
+import { SavingsAccount } from './models/savings-account';
+import { CurrentAccount } from './models/current-account';
 
 @Controller('accounts')
 export class AccountsController {
@@ -24,7 +26,8 @@ export class AccountsController {
     @Body('type') type: AccountType,
     @Body('rate') rate?: number,
     @Body('overDraftLimit') overDraftLimit?: number
-  ): Account {
+  ): SavingsAccount | CurrentAccount {
+    
     return this.accountsService.createAccount(
       idClient,
       idManager,

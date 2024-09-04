@@ -19,5 +19,21 @@
     "idManager": 3,
     "balance": 4,
     "type": "current"
+  },
+  {
+    "idAccount": 123,
+    "idClient": 1,
+    "idManager": 2,
+    "balance": 1000,
+    "rate": 0.2,
+    "type": "current"
+  },
+  {
+    "idAccount": 123,
+    "idClient": 1,
+    "idManager": 2,
+    "balance": 1000,
+    "rate": 0.2,
+    "type": "current"
   }
 ]

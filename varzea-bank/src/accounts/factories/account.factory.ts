@@ -1,28 +1,29 @@
 import { Injectable } from "@nestjs/common";
 import { AccountType } from "../enums/accountType.enum";
-import { Account } from "../models/account.interface";
+import { Account } from "../models/account.interface.model";
 import { CurrentAccount } from "../models/current-account";
 import { SavingsAccount } from "../models/savings-account";
 
 
 @Injectable()
 export class AccountFactory {
-    createAccount(
+    static createAccount(
         type: AccountType, 
-        id: number,
+        idAccount: number,
         idClient: number,
         idManager: number,
         balance: number,
         rate?: number,
         overDraftLimit?: number
-    ): Account {
+    ): CurrentAccount | SavingsAccount {
         switch (type) {
             case AccountType.CURRENT:
-                return new CurrentAccount(id, idClient, idManager,balance, rate);
+                return new CurrentAccount(idAccount, idClient, idManager, balance, rate);
             case AccountType.SAVINGS:
-                return new SavingsAccount(id, idClient, idManager,balance, overDraftLimit);
+                return new SavingsAccount(idAccount, idClient, idManager, balance, overDraftLimit);
             default:
                 throw new Error('Invalid account type');
         }
     }
+    
 }

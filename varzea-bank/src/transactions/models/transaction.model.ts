@@ -1,12 +1,8 @@
-export enum TransactionType {
-  DEBIT = 'debit',
-  CREDIT = 'credit',
-  LOAN = 'loan',
-}
+import { TransactionType } from "../enums/transactionType.enum";
 
 export class Transaction {
   constructor(
-    public id: string,
+    public idTransaction: string,
     public idAccount: string,
     public amount: number,
     public type: TransactionType,
