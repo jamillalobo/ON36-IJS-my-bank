@@ -1,27 +1,6 @@
 [
   {
-    "id": 1,
-    "id_client": 1,
-    "id_manager": 1,
-    "balance": 1000,
-    "type": "savings"
-  },
-  {
-    "id": 2,
-    "idClient": 1,
-    "idManager": 3,
-    "balance": 2,
-    "type": "savings"
-  },
-  {
-    "id": 3,
-    "idClient": 2,
-    "idManager": 3,
-    "balance": 4,
-    "type": "current"
-  },
-  {
-    "idAccount": 123,
+    "idAccount": 1,
     "idClient": 1,
     "idManager": 2,
     "balance": 1000,
@@ -29,7 +8,7 @@
     "type": "current"
   },
   {
-    "idAccount": 123,
+    "idAccount": 2,
     "idClient": 1,
     "idManager": 2,
     "balance": 1000,
