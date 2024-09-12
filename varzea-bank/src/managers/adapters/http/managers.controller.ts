@@ -1,29 +1,30 @@
 import { Controller, Post, Body, Delete, Param, Get, ParseIntPipe, Put } from '@nestjs/common';
 import { ManagersService } from '../../application/outboundPorts/managers.service';
-import { Manager } from '../../application/domain/manager.model';
+// import { Manager } from '../../application/domain/manager.model';
 import { CreateManagerDto } from './dto/create-manager.dto';
+import { ManagerEntity } from 'src/managers/entity/manager.entity';
 
 @Controller('managers')
 export class ManagersController {
   constructor(private readonly managersService: ManagersService) {}
 
   @Post()
-  createManager(@Body() createManagerDto: CreateManagerDto): Manager {
+  async createManager(@Body() createManagerDto: CreateManagerDto): Promise<ManagerEntity> {
     return this.managersService.createManager(createManagerDto);
   }
 
   @Get()
-  findAllClients(): Manager[] {
+  findAllClients(): Promise<ManagerEntity[]> {
     return this.managersService.findAllManagers();
   }
 
   @Get(':id')
-  findClientById(@Param('id', ParseIntPipe) id: number): Manager {
+  findClientById(@Param('id') id: string): Promise<ManagerEntity> {
     return this.managersService.findManagerById(id);
   }
 
   @Delete(':id')
-  deleteManager(@Param('id') id: number): void {
-    this.managersService.deleteManager(id);
+  deleteManager(@Param('id') id: string): Promise<ManagerEntity> {
+    return this.managersService.deleteManager(id);
   }
 }
