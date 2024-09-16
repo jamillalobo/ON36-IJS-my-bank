@@ -1,18 +1,19 @@
-import { Client } from "../../../clients/domain/client.model";
 import { AccountType } from "../enums/accountType.enum";
-import { Account } from "./account.interface.model";
-import { Manager } from "../../../managers/domain/manager.model";
+import { Account } from "./account.model";
+import { AccountEntity } from "../entities/account.entity";
 
-export class SavingsAccount implements Account {
+export class SavingsAccount extends AccountEntity {
     type = AccountType.SAVINGS
 
     constructor(
-        public idAccount: number,
-        public idClient: Client["id"],
-        public idManager: Manager["id"],
+        public idAccount: string,
+        public idClient: string,
+        public idManager: string,
         public balance: number,
         public overDraftLimit: number,
-    ){}
+    ){
+      super();
+    }
 
     getBalance(): number {
         return this.balance + this.overDraftLimit;

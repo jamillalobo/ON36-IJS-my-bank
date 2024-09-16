@@ -11,6 +11,9 @@ export class CreateAccountDto {
     @IsNotEmpty()
     idManager: string;
 
+    @IsNotEmpty()
+    idClient: string;
+
     @IsNumber()
     @IsNotEmpty()
     balance: number;

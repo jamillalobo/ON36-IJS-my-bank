@@ -8,6 +8,9 @@ export class ClientEntity {
 
     @Column({ name: 'name', nullable: false})
     name: string;
+
+    @Column({ name: 'cpf', nullable: false, unique: true })
+    cpf: string;
     
     @Column({ name: 'account', nullable: false}) // account one to many
     account: number[];
@@ -17,4 +20,5 @@ export class ClientEntity {
 
     @Column({ name: 'phone', nullable: false})
     phone: string;
+
 }

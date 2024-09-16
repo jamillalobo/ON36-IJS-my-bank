@@ -1,41 +1,44 @@
-// import { Client } from 'src/clients/application/domain/client.model';
-// import { AccountType } from '../enums/accountType.enum';
-// import { Account } from './account.interface.model';
-// import { Manager } from '../../../../managers/application/domain/manager.model';
+import { Client } from '../../../clients/domain/client.model';
+import { AccountType } from '../enums/accountType.enum';
+import { Account } from './account.model';
+import { Manager } from '../../../managers/domain/manager.model';
+import { AccountEntity } from '../entities/account.entity';
 
-// export class CurrentAccount implements Account {
-//   type = AccountType.CURRENT;
+export class CurrentAccount extends AccountEntity {
+  type = AccountType.CURRENT;
 
-//   constructor(
-//     public idAccount: number,
-//     public idClient: Client["id"],
-//     public idManager: Manager["id"],
-//     public balance: number,
-//     public rate: number,
-//   ) {}
+  constructor(
+    public idAccount: string,
+    public idClient: string,
+    public idManager: string,
+    public balance: number,
+    public rate: number,
+  ) {
+    super();
+  }
 
-//   getBalance(): number {
-//     return this.balance
-//   }
+  getBalance(): number {
+    return this.balance
+  }
   
-//   deposit(value: number): void {
-//     this.balance += value;
-//   }
+  deposit(value: number): void {
+    this.balance += value;
+  }
 
-//   withdraw(value: number): void {
-//     if (value <= this.balance){
-//       this.balance -= value
-//       return;
-//     };
-//     throw new Error('Saldo insuficiente para saque');
-//   }
+  withdraw(value: number): void {
+    if (value <= this.balance){
+      this.balance -= value
+      return;
+    };
+    throw new Error('Saldo insuficiente para saque');
+  }
 
-//   transfer(destiny: Account, value: number): void {
-//     if (value <= this.balance) {
-//       this.withdraw(value);
-//       destiny.deposit(value);
-//       return;
-//     }
-//     throw new Error('Saldo insuficiente para transferencia');
-//   }
-// }
+  transfer(destiny: Account, value: number): void {
+    if (value <= this.balance) {
+      this.withdraw(value);
+      destiny.deposit(value);
+      return;
+    }
+    throw new Error('Saldo insuficiente para transferencia');
+  }
+}
