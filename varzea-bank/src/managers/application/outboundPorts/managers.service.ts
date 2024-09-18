@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { AccountRepository } from '../../../accounts/application/inboundPorts/account.repository';
 import { CreateManagerDto } from 'src/managers/adapters/http/dto/create-manager.dto';
 import { Repository } from 'typeorm';
 import { ManagerEntity } from '../../entity/manager.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Manager } from 'src/managers/domain/manager.model';
 
 @Injectable()
 export class ManagersService {
   constructor(
-    // private readonly accountRepository: AccountRepository,
-    private readonly managerRepository: Repository<ManagerEntity>,
+    @InjectRepository(ManagerEntity) private readonly managerRepository: Repository<ManagerEntity>,
   ) {}
 
   // verificar como adaptar entity para model de manager

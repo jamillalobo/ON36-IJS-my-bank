@@ -1,24 +1,21 @@
 import { CreateAccountDto } from './../../adapters/http/dto/create-account.dto';
 import { CurrentAccount } from '../../domain/models/current-account';
-import { AccountRepository } from '../inboundPorts/account.repository';
 import { AccountFactory } from '../../domain/factories/account.factory';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Account } from '../../domain/models/account.model';
 import { AccountType } from '../../domain/enums/accountType.enum';
 import { SavingsAccount } from '../../domain/models/savings-account';
 import { Repository } from 'typeorm';
-import { AccountEntity } from 'src/accounts/domain/entities/account.entity';
+import { AccountEntity } from 'src/accounts/entities/account.entity';
 import { ManagerEntity } from 'src/managers/entity/manager.entity';
 import { UpdateAccountDto } from 'src/accounts/adapters/http/dto/update-account.dto';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class AccountsService {
   constructor(
-    private readonly accountRepository: Repository<AccountEntity>,
-    private readonly managerRepository: Repository<ManagerEntity>,
+    @InjectRepository(AccountEntity) private readonly accountRepository: Repository<AccountEntity>,
   ) {  }
-
-  // validacoes da criacao de negocio
 
   async createAccount(createAccountDto: CreateAccountDto): Promise<AccountEntity> {
     const account = await this.accountRepository.create(createAccountDto) as AccountEntity;
@@ -41,8 +38,7 @@ export class AccountsService {
         this.accountRepository.save(newAccount);
         return newAccount;
     }
-}
-
+  }
 
   async findAllAccounts(): Promise<AccountEntity[]> {
     const accounts = await this.accountRepository.find();
@@ -63,7 +59,6 @@ export class AccountsService {
     return account    
   }
 
-  //metodo atualizar permanece no service por questoes de validacao
   async updateAccount(id: string, updateAccountDto: UpdateAccountDto): Promise<AccountEntity> {
     const updateAccount = await this.accountRepository.update(id, updateAccountDto);
 

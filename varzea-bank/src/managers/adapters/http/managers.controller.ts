@@ -14,17 +14,17 @@ export class ManagersController {
   }
 
   @Get()
-  findAllClients(): Promise<ManagerEntity[]> {
-    return this.managersService.findAllManagers();
+  async findAllManagers(): Promise<ManagerEntity[]> {
+    return await this.managersService.findAllManagers();
   }
 
   @Get(':id')
-  findClientById(@Param('id') id: string): Promise<ManagerEntity> {
-    return this.managersService.findManagerById(id);
+  async findManagerById(@Param('id') id: string): Promise<ManagerEntity> {
+    return await this.managersService.findManagerById(id);
   }
 
   @Delete(':id')
-  deleteManager(@Param('id') id: string): Promise<ManagerEntity> {
-    return this.managersService.deleteManager(id);
+  async deleteManager(@Param('id') id: string): Promise<ManagerEntity> {
+    return await this.managersService.deleteManager(id);
   }
 }

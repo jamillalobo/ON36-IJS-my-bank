@@ -8,9 +8,8 @@ import { ClientEntity } from './entity/client.entity';
 @Module({
   imports: [
     TypeOrmModule.forFeature([ClientEntity]),
-  
-  CepRepository],
+  ],
   controllers: [ClientsController],
-  providers: [ClientsService],
+  providers: [ClientsService, CepRepository],
 })
 export class ClientsModule {}

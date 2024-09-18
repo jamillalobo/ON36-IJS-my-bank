@@ -1,19 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Repository, Transaction } from 'typeorm';
 import { TransactionEntity } from 'src/transactions/domain/entities/transaction.entity';
 import { TransactionFactory } from 'src/transactions/domain/factories/transaction.factory';
 import { AccountsService } from '../../../accounts/application/outboundPorts/accounts.service';
+import { InjectRepository } from '@nestjs/typeorm';
 
 
 @Injectable()
 export class TransactionService {
     constructor(
-        private readonly transactionRepository: Repository<TransactionEntity>,
+        @InjectRepository(TransactionEntity) private readonly transactionRepository: Repository<TransactionEntity>,
         private readonly accountService: AccountsService,
     ) {}
 
     async createTransaction(idAccount: string, amount: number): Promise<TransactionEntity> {
-        const account = await await this.accountService.findAccountById(idAccount);
+        const account = await this.accountService.findAccountById(idAccount);
 
         const newTransaction = TransactionFactory.createTransaction(account, amount);
 
@@ -21,6 +22,18 @@ export class TransactionService {
             this.transactionRepository.save(newTransaction);
             return newTransaction;
         }
+    }
+
+    async getTransactionByAccount(id: string): Promise<TransactionEntity[]> {
+        const transactions = await this.transactionRepository.find();
+
+        const transactionsByAccount = transactions.filter(t => t.account.id === id);
+
+        if(transactionsByAccount.length < 1) {
+            throw new Error('Transaction with id does not exist');
+        }
+
+        return transactionsByAccount;
     }
 
     async transfer(idAccount: string, amount: number, idAccountDestiny: string) {

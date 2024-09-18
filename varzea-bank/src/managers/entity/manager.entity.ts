@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Account } from "src/accounts/domain/models/account.model";
+import { AccountEntity } from "src/accounts/entities/account.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: 'managers'})
 export class ManagerEntity {
@@ -8,6 +10,6 @@ export class ManagerEntity {
     @Column({ name: 'name', nullable: false})
     name: string;
     
-    @Column({ name: 'accounts', nullable: false}) // account one to many ou nullable: true
-    accounts: number[];
+    @OneToMany(() => AccountEntity, (account) => account.manager, { nullable: true })
+    accounts: Account[];
 }

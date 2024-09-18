@@ -6,7 +6,7 @@ import { CurrentAccount } from "../models/current-account";
 import { SavingsAccount } from "../models/savings-account";
 import { Client } from "../../../clients/domain/client.model";
 import { Manager } from "../../../managers/domain/manager.model";
-import { AccountEntity } from '../entities/account.entity';
+import { AccountEntity } from '../../entities/account.entity';
 
 
 @Injectable()
@@ -18,18 +18,20 @@ export class AccountFactory {
             case AccountType.SAVINGS:
                 return new SavingsAccount(
                     account.id,
-                    account.idClient,
-                    account.idManager,
+                    account.client,
+                    account.manager,
                     account.balance,
                     1000, // overdraftLimit
+                    account.transactions
                 );
             case AccountType.CURRENT:
                 return new CurrentAccount(
                     account.id,
-                    account.idClient,
-                    account.idManager,
+                    account.client,
+                    account.manager,
                     account.balance,
                     0.05, // rate
+                    account.transactions
                 );
             default:
                 throw new Error('Invalid account type');

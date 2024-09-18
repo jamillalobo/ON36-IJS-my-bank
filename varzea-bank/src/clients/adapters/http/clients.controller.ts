@@ -12,6 +12,7 @@ import { ClientsService } from '../../application/outboundPorts/clients.service'
 import { Client } from '../../domain/client.model';
 import { CreateClientDto } from './dto/create-client.dto';
 import { ClientEntity } from 'src/clients/entity/client.entity';
+import { UpdateClientDto } from './dto/update-client.dto';
 
 @Controller('clients')
 export class ClientsController {
@@ -25,31 +26,23 @@ export class ClientsController {
   }
 
   @Get()
-  findAllClients(): Promise<ClientEntity[]>  {
-    return this.clientsService.findAllClients();
+  async findAllClients(): Promise<ClientEntity[]>  {
+    return await this.clientsService.findAllClients();
   }
 
   @Get(':id')
-  findClientById(@Param('id') id: string): Promise<ClientEntity>  {
-    return this.clientsService.findClientById(id);
+  async findClientById(@Param('id') id: string): Promise<ClientEntity>  {
+    return await this.clientsService.findClientById(id);
   }
   
-  // @Put(':id')
-  // updateClient(
-  //   @Param('id', ParseIntPipe) id: number,
-  //   @Body('name') name: string,
-  //   @Body('idAccount') idAccount: number,
-  //   @Body('address') address: string,
-  //   @Body('phone') phone: string,
-  // ): Client {
-  //   return this.clientsService.updateClient(
-  //     id,
-  //     name,
-  //     idAccount,
-  //     address,
-  //     phone,
-  //   );
-  // }
+  @Put(':id')
+  async updateClient(
+    @Param('id') id: string,
+    @Body() updateClientDto : UpdateClientDto,
+  ) : Promise<ClientEntity> {
+    return await this.clientsService.updateClient(id, updateClientDto);
+  }
+
 
   @Delete(':id')
   deleteClient(@Param('id') id: string): Promise<ClientEntity> {
