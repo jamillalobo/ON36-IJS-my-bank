@@ -32,23 +32,31 @@ export class AccountsController {
                 newAccount});
             
         } catch (err) {
-            return response.status(err.status).json(err.response);
+            return response.status(HttpStatus.BAD_REQUEST).json({
+                statusCode: 400,
+                message: 'Error: Product not created!',
+                error: 'Bad Request'
+            });
         }
     }
 
     @Get()
     async findAllAccounts(@Res() response) {
         try {
-            return await this.accountsService.findAllAccounts();        
+            const accountsData = await this.accountsService.findAllAccounts();    
+            return response.status(HttpStatus.OK).json({
+                message: 'All accounts data found successfully',accountsData});    
         } catch (err) {
             return response.status(err.status).json(err.response);
         }
     }
 
     @Get(':id')
-    async findClientById(@Res() response, @Param('id', ParseIntPipe) id: string) {
+    async findAccountById(@Res() response, @Param('id', ParseIntPipe) id: string) {
         try {
-            return await this.accountsService.findAccountById(id);       
+            const acccount = await this.accountsService.findAccountById(id);  
+            return response.status(HttpStatus.OK).json({
+                message: 'Account found successfully',acccount});     
         } catch (err) {
             return response.status(err.status).json(err.response);
         }
@@ -62,7 +70,7 @@ export class AccountsController {
     ) {
         try {
             const updateAccount = await this.accountsService.updateAccount(id, updateAccountDto);
-            return response.status(200).json({
+            return response.status(HttpStatus.OK).json({
                 message:'Product has been successfully updated',
                 updateAccount
             });
@@ -72,12 +80,12 @@ export class AccountsController {
     }
 
     @Delete(':id')
-    async deleteProduct(@Res() response, @Param('id') id: string) {
+    async deleteAccount(@Res() response, @Param('id') id: string) {
         try {
-        const deletedProduct = await this.accountsService.deleteAccount(id);
+        const deletedAccount = await this.accountsService.deleteAccount(id);
         return response.status(HttpStatus.OK).json({
             message: 'Account deleted successfully',
-            deletedProduct});
+            deletedAccount});
         } catch (err) {
         return response.status(err.status).json(err.response);
         }
