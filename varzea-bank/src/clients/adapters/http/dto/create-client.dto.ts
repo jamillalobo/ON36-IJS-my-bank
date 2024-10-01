@@ -13,5 +13,8 @@ export class CreateClientDto {
     cep: string;
 
     @IsNotEmpty()
+    cpf: string;
+
+    @IsNotEmpty()
     phone: string;
   }

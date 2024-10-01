@@ -1,83 +1,79 @@
+import { UpdateClientDto } from './../../adapters/http/dto/update-client.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import * as path from 'path';
-import * as fs from 'fs';
-import { Client } from 'src/clients/application/domain/client.model';
+import { ClientEntity } from '../../entity/client.entity';
 import { ClientRepository } from '../inboundPorts/client.repository';
 import { CreateClientDto } from '../../adapters/http/dto/create-client.dto';
-import { error } from 'console';
+import { Repository } from 'typeorm';
+import { CepRepository } from 'src/utils/cep.repository';
+import { Client } from 'src/clients/domain/client.model';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ClientsService {
   constructor(
-    private readonly clientRepository: ClientRepository,
+    @InjectRepository(ClientEntity) private readonly clientRepository: Repository<ClientEntity>,
+    private readonly cepRepository: CepRepository,
   ) {}
 
-  async createClient(createClientDto: CreateClientDto): Promise<Client> {
-    const clients = this.clientRepository.readClients();
-
-    const newClientId =
-    clients.length > 0 ? Number(clients[clients.length - 1].id) + 1 : 1;
-
-    const logradouro = await this.clientRepository.getCep(createClientDto.cep);
+  async createClient(createClientDto: CreateClientDto): Promise<ClientEntity> {
+    const logradouro = await this.cepRepository.getCep(createClientDto.cep);
 
     if (!logradouro) {
       throw new Error('Could not create a client with no valid logradouro');
     }
 
-    const newClient: Client = {
-      id: newClientId,
-      name: createClientDto.name,
-      account: [], // vou ajeitar isso em breve
-      cep: logradouro,
-      phone: createClientDto.phone
-    };
+    const newClient = await this.clientRepository.save(createClientDto);
 
-    clients.push(newClient);
-    this.clientRepository.writeClients(clients);
     return newClient;
   }
 
-  findAllClients(): Client[] {
-   return this.clientRepository.readClients();
+  async findAllClients(): Promise<ClientEntity[]> {
+   const clients = await this.clientRepository.find();
+
+   if(!clients || clients.length === 0) {
+     throw new NotFoundException('No clients found');
+   }
+
+    return clients;
   }
 
-  findClientById(id: number): Client {
-    const clients = this.clientRepository.readClients();
-    const client = clients.find((client) => client.id === Number(id));
+  async findClientById(id: string): Promise<ClientEntity> {
+    const client = await this.clientRepository.findOne({ where: {id}}); 
+
+    if(!client) {
+      throw new NotFoundException('Client not found');
+    }
+
     return client;
   }
 
-  updateClient(
-    id: number,
-    name: string,
-    idAccount: number,
-    address: string,
-    phone: string,
-  ): Client {
-    const clients = this.clientRepository.readClients();
-    const client = clients.find((client) => client.id === Number(id))
+  async updateClient(id: string, updateClientDto: UpdateClientDto): Promise<ClientEntity> {
+    const clientNotUpdated = await this.clientRepository.findOne({ where: { id } });
 
-    if(!client) {
-      throw new NotFoundException('Account not found');
+    if (clientNotUpdated.cpf !== updateClientDto.cpf) {
+      throw new Error(`Client can not update cpf`)
     }
 
-    const updatedClient = {
-      ...client,
-      name,
-      idAccount,
-      address,
-      phone,
-    };
-    
-    clients.push(updatedClient)
-    this.clientRepository.writeClients(clients)
-    return updatedClient;
+    const updateClient = await this.clientRepository.update(id, updateClientDto);
+
+    if (!updateClient) {
+      throw new NotFoundException('Client not found');
+    }
+
+    const client = await this.clientRepository.findOne({ where: { id } });
+
+    return client;
   }
 
-  deleteClient(id: number): void {
-    const clients = this.clientRepository.readClients();
-    const clientIndex = clients.findIndex((client) => client.id === Number(id));
+  async deleteClient(id: string): Promise<ClientEntity> {
+    const client = await this.clientRepository.findOne({ where: { id } });
 
-    clients.splice(clientIndex, 1);
+    if(!client) {
+      throw new NotFoundException('Client not found');
+    }
+
+    await this.clientRepository.delete(id);
+
+    return client;
   }
 }

@@ -1,68 +1,52 @@
-import { ManagerRepository } from '../../application/inboundPorts/manager.repository';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Manager } from '../domain/manager.model';
-import { AccountRepository } from '../../../accounts/application/inboundPorts/account.repository';
 import { CreateManagerDto } from 'src/managers/adapters/http/dto/create-manager.dto';
+import { Repository } from 'typeorm';
+import { ManagerEntity } from '../../entity/manager.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Manager } from 'src/managers/domain/manager.model';
 
 @Injectable()
 export class ManagersService {
   constructor(
-    private readonly accountRepository: AccountRepository,
-    private readonly managerRepository: ManagerRepository,
+    @InjectRepository(ManagerEntity) private readonly managerRepository: Repository<ManagerEntity>,
   ) {}
 
-  createManager(createManagerDto: CreateManagerDto): Manager {
-    const managers = this.managerRepository.readManagers();
-    const accounts = this.accountRepository.readAccounts();
-
-    const newManagerId =
-      managers.length > 0 ? Number(managers[managers.length - 1].id) + 1 : 1;
-
-    accounts.forEach((account) => {
-      account.idManager = newManagerId;
-    });
-
-    this.accountRepository.writeAccounts(accounts);
-
-    const accountIds = accounts.map((account) => account.idAccount);
-
-    const newManager: Manager = {
-      id: newManagerId,
-      name: createManagerDto.name,
-      accounts: accountIds,
-    };
-
-    managers.push(newManager);
-    this.managerRepository.writeManagers(managers);
+  // verificar como adaptar entity para model de manager
+  async createManager(createManagerDto: CreateManagerDto): Promise<ManagerEntity> {
+    const newManager = await this.managerRepository.save(createManagerDto);
+  
     return newManager;
   }
 
-  findAllManagers(): Manager[] {
-    return this.managerRepository.readManagers();
+  async findAllManagers(): Promise<ManagerEntity[]> {
+    const managers = await this.managerRepository.find();
+
+    if (!managers || managers.length === 0) {
+      throw new NotFoundException('No managers found');
+    }
+
+    return managers;
   }
 
-  findManagerById(id: number): Manager {
-    const managers = this.managerRepository.readManagers();
-    const manager = managers.find((manager) => manager.id === Number(id))
+  async findManagerById(id: string): Promise<ManagerEntity> {
+    const manager = await this.managerRepository.findOne({ where: { id } });
 
     if (!manager) {
-      throw new NotFoundException(`Manager with id ${id} not found`);
+      throw new NotFoundException('Manager not found');
     }
 
     return manager;
   }
 
-  deleteManager(id: number): void {
-    const managers = this.managerRepository.readManagers();
-    const managerIndex = managers.findIndex(
-      (manager) => manager.id === Number(id),
-    );
+  async deleteManager(id: string): Promise<ManagerEntity> {
+    const manager = await this.managerRepository.findOne({ where: { id } });
 
-    if (managerIndex !== -1) {
-      managers.splice(managerIndex, 1);
-      this.managerRepository.writeManagers(managers);
-    } else {
-      console.error(`Manager with ID ${id} not found.`);
+    if (!manager) {
+      throw new NotFoundException('Manager not found');
     }
+
+    await this.managerRepository.delete(id);
+
+    return manager;
   }
 }

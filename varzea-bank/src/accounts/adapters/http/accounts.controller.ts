@@ -1,63 +1,93 @@
 import {
-  Controller,
-  Param,
-  Patch,
-  Body,
-  Post,
-  Delete,
-  ParseIntPipe,
-  Get,
+    Controller,
+    Param,
+    Body,
+    Post,
+    Delete,
+    ParseIntPipe,
+    Get,
+    Res,
+    HttpStatus,
+    Put,
+
 } from '@nestjs/common';
-import { AccountsService } from 'src/accounts/accounts.service';
-import { Account } from '../../application/domain/models/account.interface.model';
-import { AccountType } from '../../application/domain/enums/accountType.enum';
-import { SavingsAccount } from '../../application/domain/models/savings-account';
-import { CurrentAccount } from '../../application/domain/models/current-account';
+import { AccountsService } from '../../application/outboundPorts/accounts.service';
+import { AccountType } from '../../domain/enums/accountType.enum';
+import { CreateAccountDto } from './dto/create-account.dto';
+import { UpdateAccountDto } from './dto/update-account.dto';
 
 @Controller('accounts')
 export class AccountsController {
-  constructor(private readonly accountsService: AccountsService) {}
+    constructor(private readonly accountsService: AccountsService) {}
 
-  @Post()
-  createAccount(
-    @Body('id_client') idClient: number,
-    @Body('id_manager') idManager: number,
-    @Body('balance') balance: number,
-    @Body('type') type: AccountType,
-    @Body('rate') rate?: number,
-    @Body('overDraftLimit') overDraftLimit?: number
-  ): SavingsAccount | CurrentAccount {
-    
-    return this.accountsService.createAccount(
-      idClient,
-      idManager,
-      balance,
-      type,
-      rate,
-      overDraftLimit
-    );
-  }
+    @Post()
+    async createAccount(
+        @Res() response, 
+        @Body() createAccountDto: CreateAccountDto,
+    ) {
+        try {
+            const newAccount = await this.accountsService.createAccount(createAccountDto);
+            return response.status(HttpStatus.CREATED).json({
+                message: 'Account has been created successfully',
+                newAccount});
+            
+        } catch (err) {
+            return response.status(HttpStatus.BAD_REQUEST).json({
+                statusCode: 400,
+                message: 'Error: Product not created!',
+                error: 'Bad Request'
+            });
+        }
+    }
 
-  @Get()
-  findAllAccounts(): Account[] {
-    return this.accountsService.getAccounts();
-  }
+    @Get()
+    async findAllAccounts(@Res() response) {
+        try {
+            const accountsData = await this.accountsService.findAllAccounts();    
+            return response.status(HttpStatus.OK).json({
+                message: 'All accounts data found successfully',accountsData});    
+        } catch (err) {
+            return response.status(err.status).json(err.response);
+        }
+    }
 
-  @Get(':id')
-  findClientById(@Param('id', ParseIntPipe) id: number): Account {
-    return this.accountsService.getAccountById(id);
-  }
+    @Get(':id')
+    async findAccountById(@Res() response, @Param('id', ParseIntPipe) id: string) {
+        try {
+            const acccount = await this.accountsService.findAccountById(id);  
+            return response.status(HttpStatus.OK).json({
+                message: 'Account found successfully',acccount});     
+        } catch (err) {
+            return response.status(err.status).json(err.response);
+        }
+    }
 
-  @Patch(':id/update-type-account')
-  updateAccountType(
-    @Param('id', ParseIntPipe) id: number,
-    @Body('newType') newType: AccountType,
-  ): void {
-    return this.accountsService.updateAccountType(id, newType);
-  }
+    @Put(':id')
+    async updateAccountType(
+        @Res() response,
+        @Param('id') id: string,
+        @Body() updateAccountDto: UpdateAccountDto,
+    ) {
+        try {
+            const updateAccount = await this.accountsService.updateAccount(id, updateAccountDto);
+            return response.status(HttpStatus.OK).json({
+                message:'Product has been successfully updated',
+                updateAccount
+            });
+        } catch (err) {
+            return response.status(err.status).json(err.response);
+        }
+    }
 
-  @Delete(':id')
-  deleteManager(@Param('id', ParseIntPipe) id: number): void {
-    return this.accountsService.deleteAccount(id);
-  }
+    @Delete(':id')
+    async deleteAccount(@Res() response, @Param('id') id: string) {
+        try {
+        const deletedAccount = await this.accountsService.deleteAccount(id);
+        return response.status(HttpStatus.OK).json({
+            message: 'Account deleted successfully',
+            deletedAccount});
+        } catch (err) {
+        return response.status(err.status).json(err.response);
+        }
+    }
 }

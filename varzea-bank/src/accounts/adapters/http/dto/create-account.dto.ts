@@ -1,13 +1,20 @@
 import {
     IsNotEmpty,
+    IsNumber,
   } from 'class-validator';
-import { AccountType } from 'src/accounts/application/domain/enums/accountType.enum';
-import { Manager } from 'src/managers/application/domain/model/manager.model';
+import { AccountType } from 'src/accounts/domain/enums/accountType.enum';
 
 export class CreateAccountDto {
     @IsNotEmpty()
     type: AccountType;
     
     @IsNotEmpty()
-    idManager: Manager["id"];
+    idManager: string;
+
+    @IsNotEmpty()
+    idClient: string;
+
+    @IsNumber()
+    @IsNotEmpty()
+    balance: number;
   }
