@@ -7,15 +7,18 @@ export class CepRepository {
           const url = `https://viacep.com.br/ws/${cep}/json/`;
     
           const response = await axios.get(url)
-            .then(response => {
-              return response.data;
-            }).catch(error => {
-              console.log('error in fetching cep', error);
-            }
-          );
-          return response.data.logradouro;
-        } catch (error) { 
-          console.log('error in fetching data', error);
+
+          const data = response.data;
+          
+          if (data && data.logradouro) {
+            return data.logradouro;
+          } else {
+            console.log('Logradouro não encontrado para o CEP fornecido.');
+            return 'Logradouro não encontrado';
+          }
+        } catch (error) {
+          console.log('Erro ao buscar dados do CEP:', error);
+          return 'Erro ao buscar dados';
         }
       }
 }

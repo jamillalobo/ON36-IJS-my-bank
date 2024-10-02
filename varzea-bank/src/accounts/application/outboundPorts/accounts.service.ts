@@ -10,33 +10,45 @@ import { AccountEntity } from 'src/accounts/entities/account.entity';
 import { ManagerEntity } from 'src/managers/entity/manager.entity';
 import { UpdateAccountDto } from 'src/accounts/adapters/http/dto/update-account.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ManagersService } from 'src/managers/application/outboundPorts/managers.service';
+import { ClientsService } from 'src/clients/application/outboundPorts/clients.service';
 
 @Injectable()
 export class AccountsService {
   constructor(
     @InjectRepository(AccountEntity) private readonly accountRepository: Repository<AccountEntity>,
-  ) {  }
+    private readonly managerService: ManagersService,
+    private readonly clientService: ClientsService,
+  ) { }
 
   async createAccount(createAccountDto: CreateAccountDto): Promise<AccountEntity> {
-    const account = await this.accountRepository.create(createAccountDto) as AccountEntity;
+    // Criar o objeto da conta
+    const account = this.accountRepository.create(createAccountDto) as AccountEntity;
+
+    // Buscar cliente e gerente pelo ID
+    const client = await this.clientService.findClientById(createAccountDto.idClient);
+    const manager = await this.managerService.findManagerById(createAccountDto.idManager);
+
+
+    // Garantir que os IDs de cliente e gerente estão sendo atribuídos
+    account.client = client;
+    account.manager = manager;
 
     let newAccount: SavingsAccount | CurrentAccount;
 
+    // Criar a nova conta com base no tipo
     if (account.type === 'savings') {
-        newAccount = AccountFactory.createAccount(
-            account,
-        ) as SavingsAccount;
+      newAccount = AccountFactory.createAccount(account, client, manager) as SavingsAccount;
     }
 
     if (account.type === 'current') {
-        newAccount = AccountFactory.createAccount(
-            account,
-        ) as CurrentAccount;
+      newAccount = AccountFactory.createAccount(account, client, manager) as CurrentAccount;
     }
 
     if (newAccount) {
-        this.accountRepository.save(newAccount);
-        return newAccount;
+      // Salvar a nova conta no banco de dados
+      const newAccountEntity = await this.accountRepository.save(account);
+      return newAccountEntity;
     }
   }
 
@@ -51,12 +63,16 @@ export class AccountsService {
   }
 
   async findAccountById(id: string): Promise<AccountEntity> {
-    const account = this.accountRepository.findOne({ where: {id}});
-
+    const account = await this.accountRepository.findOne({ 
+      where: { id }, 
+      relations: ['transactions'], 
+    });
+  
     if (!account) {
-      throw new NotFoundException(`Account not found`);
+      throw new NotFoundException('Account not found');
     }
-    return account    
+  
+    return account;
   }
 
   async updateAccount(id: string, updateAccountDto: UpdateAccountDto): Promise<AccountEntity> {

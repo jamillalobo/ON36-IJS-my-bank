@@ -29,12 +29,14 @@ export class ManagersService {
   }
 
   async findManagerById(id: string): Promise<ManagerEntity> {
-    const manager = await this.managerRepository.findOne({ where: { id } });
-
+    const manager = await this.managerRepository.findOne({
+      where: { id },
+      relations: ['accounts'], // Inclui as contas associadas
+    });
+  
     if (!manager) {
       throw new NotFoundException('Manager not found');
     }
-
     return manager;
   }
 

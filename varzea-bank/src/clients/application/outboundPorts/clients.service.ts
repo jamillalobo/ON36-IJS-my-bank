@@ -38,12 +38,14 @@ export class ClientsService {
   }
 
   async findClientById(id: string): Promise<ClientEntity> {
-    const client = await this.clientRepository.findOne({ where: {id}}); 
-
-    if(!client) {
+    const client = await this.clientRepository.findOne({
+      where: { id },
+      relations: ['accounts'], // join qu inclui contas associadas 
+    });
+  
+    if (!client) {
       throw new NotFoundException('Client not found');
     }
-
     return client;
   }
 

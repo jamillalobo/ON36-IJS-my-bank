@@ -6,11 +6,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ManagerEntity } from './entity/manager.entity';
 
 @Module({
-  //imports: [AccountsModule],
   imports: [
     TypeOrmModule.forFeature([ManagerEntity]),
   ],
   controllers: [ManagersController],
   providers: [ManagersService],
+  exports: [ManagersService],
 })
 export class ManagersModule {}

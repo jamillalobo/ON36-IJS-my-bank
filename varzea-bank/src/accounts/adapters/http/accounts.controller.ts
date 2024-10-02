@@ -34,7 +34,7 @@ export class AccountsController {
         } catch (err) {
             return response.status(HttpStatus.BAD_REQUEST).json({
                 statusCode: 400,
-                message: 'Error: Product not created!',
+                message: 'Error: Account not created!',
                 error: 'Bad Request'
             });
         }
@@ -71,7 +71,7 @@ export class AccountsController {
         try {
             const updateAccount = await this.accountsService.updateAccount(id, updateAccountDto);
             return response.status(HttpStatus.OK).json({
-                message:'Product has been successfully updated',
+                message:'Account has been successfully updated',
                 updateAccount
             });
         } catch (err) {

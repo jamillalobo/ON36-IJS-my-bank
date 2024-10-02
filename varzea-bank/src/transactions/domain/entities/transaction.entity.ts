@@ -9,7 +9,7 @@ export class TransactionEntity {
     idTransaction: string;
 
     @ManyToOne(() => AccountEntity, (account) => account.transactions)
-    account: Account;
+    account: AccountEntity;
 
     @Column({ name: 'amount', nullable: false})
     amount: number;

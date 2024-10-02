@@ -4,17 +4,20 @@ import { Account } from './account.model';
 import { Manager } from '../../../managers/domain/manager.model';
 import { AccountEntity } from '../../entities/account.entity';
 import { Transaction } from 'src/transactions/domain/models/transaction.model';
+import { ClientEntity } from 'src/clients/entity/client.entity';
+import { ManagerEntity } from 'src/managers/entity/manager.entity';
+import { TransactionEntity } from 'src/transactions/domain/entities/transaction.entity';
 
 export class CurrentAccount extends AccountEntity {
   type = AccountType.CURRENT;
 
   constructor(
     public idAccount: string,
-    public client: Client,
-    public manager: Manager,
+    public client: ClientEntity,
+    public manager: ManagerEntity,
     public balance: number,
     public rate: number,
-    public transactions: Transaction[]
+    public transactions: TransactionEntity[]
   ) {
     super();
   }

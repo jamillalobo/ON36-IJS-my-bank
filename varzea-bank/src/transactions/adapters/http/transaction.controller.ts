@@ -1,19 +1,20 @@
 import { Body, Controller, Get, Param, Post, Res, HttpStatus } from '@nestjs/common';
 import { TransactionService } from 'src/transactions/application/outbounfPorts/transaction.service';
+import { TransferDto } from './dto/transfer.dto';
+import { TransactionDto } from './dto/transaction.dto';
 
 @Controller('transaction')
 export class TransactionController {
     constructor(private readonly transactionService: TransactionService) {}
 
-    @Post()
+    @Post('/transfer')
     async transfer(
         @Res() response,
-        @Body() idAccount: string,
-        @Body() amount: string,
-        @Body() IdAccountDestiny: string,
+        @Body() transferDto: TransferDto,
     ) {
         try {
-            const transfer = await this.transactionService.transfer(idAccount, Number(amount), IdAccountDestiny);
+            const { account, amount, accountDestiny } = transferDto
+            const transfer = await this.transactionService.transfer(account, amount, accountDestiny);
             return response.status(HttpStatus.OK).json({
                 message: 'Transfer completed successfully',
                 transfer});
@@ -26,14 +27,14 @@ export class TransactionController {
         }
     }
 
-    @Post()
+    @Post('/deposit')
     async deposit(
-        @Body() response,
-        @Body() idAccount: string,
-        @Body() amount: string,
+        @Res() response,
+        @Body() transactionDto: TransactionDto,
     ) {
         try {
-            const deposit = await this.transactionService.deposit(idAccount, Number(amount));
+            const { account, amount } = transactionDto;
+            const deposit = await this.transactionService.deposit(account, amount);
             return response.status(HttpStatus.OK).json({
                 message: 'Deposit completed successfully',
                 deposit});
@@ -46,14 +47,15 @@ export class TransactionController {
         }
     }
 
-    @Post()
+    @Post('/withdraw')
     async withdraw(
-        @Body() response,
-        @Body() idAccount: string,
-        @Body() amount: string,
+        @Res() response,
+        @Body() transactionDto: TransactionDto,
+
     ) {
         try {
-            const withdraw = await this.transactionService.withdraw(idAccount, Number(amount));
+            const { account, amount } = transactionDto;
+            const withdraw = await this.transactionService.withdraw(account, amount);
             return response.status(HttpStatus.OK).json({
                 message: 'Withdraw completed successfully',
                 withdraw});
@@ -66,10 +68,10 @@ export class TransactionController {
         }
     }
 
-    @Get(':id')
+    @Get('/:id')
     async getTransactionByAccount(
         @Res() response,
-        @Param() id: string,
+        @Param('id') id: string,
     ) {
         try {
             const transactions = await this.transactionService.getTransactionByAccount(id);
